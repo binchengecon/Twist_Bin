@@ -181,7 +181,6 @@ while FC_Err > tol and epoch < max_iter:
 
     A = np.zeros(W1_mat.shape)
     B_1 = alpha_z_hat-kappa_hat*W1_mat+ h1*sigma_z[0] + hz *sigma_z[1]
-    
     B_2 = np.zeros(W1_mat.shape)
     B_3 = np.zeros(W1_mat.shape)
     C_1 = (sigma_z[0]**2+sigma_z[1]**2)/2*np.ones(W1_mat.shape)
