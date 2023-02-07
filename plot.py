@@ -128,6 +128,7 @@ plt.ylim([-0.0050, -0.0020])
 plt.savefig(Fig_Dir+"h_rho_{}.png".format(rho))
 plt.close()
 
+print("V0max,min={},{}".format(V0.max(),V0.min()))
 
 plt.plot(W1,V0[:,2,2],label="V")
 plt.legend()

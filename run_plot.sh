@@ -40,9 +40,16 @@ for epsilon in ${epsilonarray[@]}; do
 
             # dataname="OneCapital_try_new_eps_${epsilon}_frac_${fraction}"
 
-            action_name="OneCapital_newcab"
+            # action_name="OneCapital_newcab"
 
-            dataname="OneCapital_newcab_${epsilon}_frac_${fraction}"
+            # dataname="OneCapital_newcab_${epsilon}_frac_${fraction}"
+
+            action_name="OneCapital_newcab_newgrid"
+        
+            # action_name="OneCapital_newcab3_addD"
+
+            dataname="${action_name}_${epsilon}_frac_${fraction}"
+
 
             mkdir -p ./job-outs/${action_name}/p_eps_${epsilon}_frac_${fraction}/
 
@@ -69,7 +76,8 @@ for epsilon in ${epsilonarray[@]}; do
 #SBATCH --time=7-00:00:00
 
 ####### load modules
-module load python/booth/3.8/3.8.5  gcc/9.2.0
+# module load python/booth/3.8/3.8.5  gcc/9.2.0
+module load python/booth/3.8 gcc/9.2.0
 
 echo "\$SLURM_JOB_NAME"
 

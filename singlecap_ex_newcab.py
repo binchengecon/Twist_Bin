@@ -1,6 +1,6 @@
-from matplotlib.backends.backend_pdf import PdfPages
-import matplotlib.pyplot as plt
-import matplotlib as mpl
+# from matplotlib.backends.backend_pdf import PdfPages
+# import matplotlib.pyplot as plt
+# import matplotlib as mpl
 import pickle
 import time
 import petsclinearsystem
@@ -36,7 +36,7 @@ args = parser.parse_args()
 alpha_z_hat = 0.0
 kappa_hat = 0.014
 
-alpha_c_hat = 0.484       # consumption intercept (estimated) 
+alpha_c_hat = 0.88       # consumption intercept (estimated) 
 beta_hat = 1.0
 sigma_c = [0.477, 0.0  ]   # consumption exposure (= exposure of single capital)
 sigma_z = [0.011, 0.025]
@@ -151,12 +151,12 @@ while FC_Err > tol and epoch < max_iter:
     dVdW1= finiteDiff_3D(V0, 0, 1, hW1)
     ddVddW1= finiteDiff_3D(V0, 0, 2, hW1)
     # dZ = dW1
-    dVdW2 = finiteDiff_3D(V0, 1, 1, hW2)
-    ddVddW2 = finiteDiff_3D(V0, 1, 2, hW2)
-    # dY = dW2
-    dVdW3 = finiteDiff_3D(V0, 2, 1, hW3)
-    ddVddW3 = finiteDiff_3D(V0, 2, 2, hW3)
-    # dZ = dW2
+    # dVdW2 = finiteDiff_3D(V0, 1, 1, hW2)
+    # ddVddW2 = finiteDiff_3D(V0, 1, 2, hW2)
+    # # dY = dW2
+    # dVdW3 = finiteDiff_3D(V0, 2, 1, hW3)
+    # ddVddW3 = finiteDiff_3D(V0, 2, 2, hW3)
+    # # dZ = dW2
 
     # need to change the control optimizatio completely due to corner solution of c
 
@@ -164,12 +164,39 @@ while FC_Err > tol and epoch < max_iter:
     #     print("warning\n")
     
     d_star[d_star>=A_cap] = A_cap-0.001
+    
+    
     mc = (A_cap-d_star)**(rho)/(delta*V0**(rho-1))
     
     # mc[mc<=1]=1+1e-16
     
     d_new = mc - 1
     d_new = d_new/theta2
+
+    # d_new[d_new>=A_cap] = A_cap-0.001
+
+    #######new scheme for d#############
+    # V0[V0<=1e-16] = 1e-16 
+    # RHS = delta*V0**(rho-1)/(A_cap-d_star)**(rho)
+    
+    # if RHS.all()>0:
+    #     RHS_inv = 1/RHS
+        
+    #     d_new = RHS_inv-1
+    #     d_new = d_new/theta2
+        
+    #     d_new[d_new>=A_cap] = A_cap-0.001
+
+
+    # else:
+    #     d_new[RHS<=0]=A_cap-0.001
+        
+    #     d_new[RHS>0] = (1/RHS-1)/theta2
+        
+    #     d_new[d_new>=A_cap] = A_cap-0.001
+
+        
+    
     
     h1_new = -(.01*sigma_c[0]+dVdW1*sigma_z[0])/ell
     hz_new = -(.01*sigma_c[1]+dVdW1*sigma_z[1])/ell
@@ -237,8 +264,9 @@ while FC_Err > tol and epoch < max_iter:
     hz_star = hz
     epoch += 1
     
-    if epoch %100==0:
-        print("mc_max,min={},{}".format(mc.max() , mc.min()))
+    if epoch %1==0:
+        print("V0_max,min={},{}".format(V0.max() , V0.min()))
+        print("D_max,min={},{}".format(D.max() , D.min()))
         print("d_max,min={},{}".format(d.max() , d.min()))
         print("h1_max,min={},{}".format(h1.max() , h1.min()))
         print("hz_max,min={},{}".format(hz.max() , hz.min()))

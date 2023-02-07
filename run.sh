@@ -14,7 +14,8 @@ fractionarray=(0.01)
 actiontime=1
 
 # python_name="singlecap_ex.py"
-python_name="singlecap_ex_newcab.py"
+# python_name="singlecap_ex_newcab.py"
+python_name="singlecap_ex_newcab_newsigmaz.py"
 
 maxiter=1000000
 
@@ -34,9 +35,15 @@ for epsilon in ${epsilonarray[@]}; do
 
             # dataname="OneCapital_try_new_eps_${epsilon}_frac_${fraction}"
 
-            action_name="OneCapital_newcab"
+            # action_name="OneCapital_newcab"
+            # action_name="OneCapital_newcab_rep"
+            # action_name="OneCapital_newcab_newsigmaz"
+            # action_name="OneCapital_newcab_newsigmaz_newgrid"
+            action_name="OneCapital_newcab_newgrid"
+        
+            # action_name="OneCapital_newcab3_addD"
 
-            dataname="OneCapital_newcab_${epsilon}_frac_${fraction}"
+            dataname="${action_name}_${epsilon}_frac_${fraction}"
 
             # for delta in ${deltaarr[@]}; do
             #     for cearth in ${ceartharray[@]}; do
@@ -67,7 +74,8 @@ for epsilon in ${epsilonarray[@]}; do
 #SBATCH --time=7-00:00:00
 
 ####### load modules
-module load python/booth/3.8/3.8.5  gcc/9.2.0
+# module load python/booth/3.8/3.8.5  gcc/9.2.0
+module load python/booth/3.8  gcc/9.2.0
 
 echo "\$SLURM_JOB_NAME"
 
