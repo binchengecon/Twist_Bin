@@ -97,6 +97,8 @@ Fig_Dir = "./figure/"+args.figname+"/"
 
 os.makedirs(Fig_Dir, exist_ok=True)
 
+print("max,min={},{}".format(d_star[:,2,2].max(),d_star[:,2,2].min()))
+
 plt.plot(W1,d_star[:,2,2],label="$d$")
 plt.plot(W1,0.0317914761536931*np.ones(d_star[:,2,2].shape),label=r"$d$: baseline",linestyle='--',color='red')
 # print((d_star[-1,2,2]-d_star[0,2,2])/2)
@@ -107,7 +109,7 @@ plt.xlabel('z')
 # plt.ylabel('$\%$ of GDP')
 plt.title('Investment-Capital Ratio')  
 plt.xlim([-0.05, 0.05])
-# plt.ylim([0.025,0.040])
+plt.ylim([0.015,0.040])
 
 plt.savefig(Fig_Dir+"d_rho_{}.png".format(rho))
 plt.close()
