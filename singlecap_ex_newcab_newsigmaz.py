@@ -168,7 +168,7 @@ while FC_Err > tol and epoch < max_iter:
     d_star[d_star>=A_cap] = A_cap-0.001
     
     
-    mc = (A_cap-d_star)**(rho)/(delta*V0**(rho-1))
+    mc = (A_cap-d_star)**(rho)/(delta*np.exp(V0)**(rho-1))
     
     # mc[mc<=1]=1+1e-16
     
@@ -266,7 +266,7 @@ while FC_Err > tol and epoch < max_iter:
     hz_star = hz
     epoch += 1
     
-    if FC_Err<=1e-4 or epoch >=900000:
+    if FC_Err<=1e-4 or epoch >=2990000:
         
         if epoch %1==0:
             print("V0_max,min={},{}".format(V0.max() , V0.min()))
