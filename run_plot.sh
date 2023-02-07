@@ -5,8 +5,12 @@
 # epsilonarray=(0.1) #Computation of coarse grid and psi10.5
 # fractionarray=(0.1)
 
-epsilonarray=(0.5) #Computation of coarse grid and psi10.5
-fractionarray=(0.5)
+epsilonarray=(0.01) #Computation of coarse grid and psi10.5
+fractionarray=(0.01)
+
+
+# epsilonarray=(0.5) #Computation of coarse grid and psi10.5
+# fractionarray=(0.5)
 
 actiontime=1
 
@@ -15,9 +19,9 @@ python_name="plot.py"
 maxiter=400000
 
 # rhoarray=(0.667 0.750 1.00001 1.333 1.500)
-# rhoarray=(0.800 0.850 0.900 0.950 1.00001 1.050 1.100 1.150 1.200 1.250 1.300)
+rhoarray=(0.800 0.850 0.900 0.950 1.00001 1.050 1.100 1.150 1.200 1.250 1.300)
 # rhoarray=(0.800 0.850 0.900)
-rhoarray=(0.950 1.00001 1.050 1.100 1.150 1.200 1.250 1.300)
+# rhoarray=(0.950 1.00001 1.050 1.100 1.150 1.200 1.250 1.300)
 
 for epsilon in ${epsilonarray[@]}; do
     for fraction in "${fractionarray[@]}"; do
@@ -26,12 +30,19 @@ for epsilon in ${epsilonarray[@]}; do
             # declare -n hXarr="$hXarri"
 
             # action_name="OneCapital_${hXarr[0]}_${hXarr[1]}_${hXarr[2]}_LR_${epsilon}"
-            action_name="OneCapital_try_original"
+            # action_name="OneCapital_try_original"
 
-            dataname="OneCapital_try_original_eps_${epsilon}_frac_${fraction}"
+            # dataname="OneCapital_try_original_eps_${epsilon}_frac_${fraction}"
             # for delta in ${deltaarr[@]}; do
             #     for cearth in ${ceartharray[@]}; do
             #         for tauc in ${taucarray[@]}; do
+            # action_name="OneCapital_try_new"
+
+            # dataname="OneCapital_try_new_eps_${epsilon}_frac_${fraction}"
+
+            action_name="OneCapital_newcab"
+
+            dataname="OneCapital_newcab_${epsilon}_frac_${fraction}"
 
             mkdir -p ./job-outs/${action_name}/p_eps_${epsilon}_frac_${fraction}/
 

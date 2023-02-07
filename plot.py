@@ -107,7 +107,7 @@ plt.xlabel('z')
 # plt.ylabel('$\%$ of GDP')
 plt.title('Investment-Capital Ratio')  
 plt.xlim([-0.05, 0.05])
-plt.ylim([0.025,0.040])
+# plt.ylim([0.025,0.040])
 
 plt.savefig(Fig_Dir+"d_rho_{}.png".format(rho))
 plt.close()
