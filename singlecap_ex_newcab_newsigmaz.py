@@ -221,7 +221,7 @@ while FC_Err > tol and epoch < max_iter:
     C_3 = np.zeros(W1_mat.shape)
     temp = (1-rho)* ( np.log(A_cap - d)-V0 )
     D = delta/(1-rho) * ( np.exp(temp) - 1) 
-    D += theta1*np.log(1+theta2*d) + .01 * (alpha_c_hat + beta_hat *W1_mat - .01/2*(sigma_z[0]**2+sigma_z[1]**2) ) +.01 * (sigma_c[0]*h1 + sigma_c[1]*hz)
+    D += theta1*np.log(1+theta2*d) + .01 * (alpha_c_hat + beta_hat *W1_mat - .01/2*(sigma_c[0]**2+sigma_c[1]**2) ) +.01 * (sigma_c[0]*h1 + sigma_c[1]*hz)
     D += ell * ( h1**2+hz**2 )/2
     
     start_ksp = time.time()
@@ -267,7 +267,7 @@ while FC_Err > tol and epoch < max_iter:
     hz_star = hz
     epoch += 1
     
-    if FC_Err<=1e-4 or epoch >=2990000:
+    if FC_Err<=1e-5 or epoch >=2990000:
         
         if epoch %1==0:
             print("V0_max,min={},{}".format(V0.max() , V0.min()))

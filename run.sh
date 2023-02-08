@@ -15,8 +15,8 @@ actiontime=1
 
 # python_name="singlecap_ex.py"
 # python_name="singlecap_ex_newcab.py"
-# python_name="singlecap_ex_newcab_newsigmaz.py"
-python_name="singlecap_ex_newcab_newsigmaz2.py"
+python_name="singlecap_ex_newcab_newsigmaz.py"
+# python_name="singlecap_ex_newcab_newsigmaz2.py"
 
 maxiter=3000000
 
@@ -40,7 +40,7 @@ for epsilon in ${epsilonarray[@]}; do
             # action_name="OneCapital_newcab_rep"
             # action_name="OneCapital_newcab_newsigmaz"
             # action_name="OneCapital_newcab_newsigmaz_newgrid"
-            action_name="OneCapital_newcab_newgrid_morepts_0.01sigmaz"
+            action_name="OneCapital_newcab_newgrid_morepts"
         
             # action_name="OneCapital_newcab3_addD"
 
