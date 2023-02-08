@@ -37,7 +37,8 @@ alpha_z_hat = 0.0
 kappa_hat = 0.014
 
 # alpha_c_hat = 0.484       # consumption intercept (estimated) 
-alpha_c_hat = 0.88      # consumption intercept (estimated) 
+# alpha_c_hat = 0.88      # consumption intercept (estimated) 
+alpha_c_hat = -0.88      # consumption intercept (estimated) 
 beta_hat = 1.0
 sigma_c = np.array([0.477, 0.0 ])   # consumption exposure (= exposure of single capital)
 
