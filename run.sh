@@ -2,11 +2,11 @@
 
 # epsilonarray=(0.1 0.05 0.01 0.005) #Computation of coarse grid and psi10.5
 # fractionarray=(0.1 0.05 0.01 0.005)
-# epsilonarray=(0.1) #Computation of coarse grid and psi10.5
-# fractionarray=(0.1)
+epsilonarray=(0.1) #Computation of coarse grid and psi10.5
+fractionarray=(0.1)
 
-epsilonarray=(0.01) #Computation of coarse grid and psi10.5
-fractionarray=(0.01)
+# epsilonarray=(0.01) #Computation of coarse grid and psi10.5
+# fractionarray=(0.01)
 
 # epsilonarray=(0.2 0.01) #Computation of coarse grid and psi10.5
 # fractionarray=(0.2 0.01)
@@ -21,9 +21,9 @@ python_name="singlecap_ex_newcab_newsigmaz.py"
 maxiter=3000000
 
 # rhoarray=(0.667 0.750 1.00001 1.333 1.500)
-rhoarray=(0.800 0.850 0.900 0.950 1.00001 1.050 1.100 1.150 1.200 1.250 1.300)
+# rhoarray=(0.800 0.850 0.900 0.950 1.00001 1.050 1.100 1.150 1.200 1.250 1.300)
 # rhoarray=(0.800 0.850 0.900)
-# rhoarray=(0.950 1.00001 1.050 1.100 1.150 1.200 1.250 1.300)
+rhoarray=(1.350 1.400 1.450 1.500)
 
 for epsilon in ${epsilonarray[@]}; do
     for fraction in "${fractionarray[@]}"; do
