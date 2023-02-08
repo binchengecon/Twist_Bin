@@ -36,9 +36,9 @@ args = parser.parse_args()
 alpha_z_hat = 0.0
 kappa_hat = 0.014
 
-# alpha_c_hat = 0.484       # consumption intercept (estimated) 
-# alpha_c_hat = 0.88      # consumption intercept (estimated) 
-alpha_c_hat = -0.88      # consumption intercept (estimated) 
+alpha_k_hat = -0.88       # -1.279
+alpha_c_hat = 0.484      
+
 beta_hat = 1.0
 sigma_c = np.array([0.477, 0.0 ])   # consumption exposure (= exposure of single capital)
 
@@ -222,7 +222,7 @@ while FC_Err > tol and epoch < max_iter:
     C_3 = np.zeros(W1_mat.shape)
     temp = (1-rho)* ( np.log(A_cap - d)-V0 )
     D = delta/(1-rho) * ( np.exp(temp) - 1) 
-    D += theta1*np.log(1+theta2*d) + .01 * (alpha_c_hat + beta_hat *W1_mat - .01/2*(sigma_c[0]**2+sigma_c[1]**2) ) +.01 * (sigma_c[0]*h1 + sigma_c[1]*hz)
+    D += theta1*np.log(1+theta2*d) + .01 * (alpha_k_hat + beta_hat *W1_mat - .01/2*(sigma_c[0]**2+sigma_c[1]**2) ) +.01 * (sigma_c[0]*h1 + sigma_c[1]*hz)
     D += ell * ( h1**2+hz**2 )/2
     
     start_ksp = time.time()
