@@ -53,7 +53,7 @@ kappa_hat = 0.014
 alpha_c_hat = 0.484       # consumption intercept (estimated) 
 beta_hat = 1.0
 sigma_c = [0.477, 0.0  ]   # consumption exposure (= exposure of single capital)
-sigma_z = [0.011, 0.025]
+sigma_z =  [0.011, 0.025]
 rho = args.rho
 
 delta = 0.002
@@ -111,7 +111,7 @@ plt.xlabel('z')
 # plt.ylabel('$\%$ of GDP')
 plt.title('Investment-Capital Ratio')  
 plt.xlim([-0.05, 0.05])
-plt.ylim([0.015,0.040])
+plt.ylim([0.010,0.030])
 
 plt.savefig(Fig_Dir+"d_rho_{}.png".format(rho))
 plt.close()
@@ -126,7 +126,7 @@ plt.xlabel('z')
 # plt.ylabel('$\%$ of GDP')
 plt.title('Distortion')  
 plt.xlim([-0.05, 0.05])
-# plt.ylim([-0.0050, -0.0020])
+plt.ylim([-0.15, -0.05])
 plt.savefig(Fig_Dir+"h_rho_{}.png".format(rho))
 plt.close()
 
@@ -141,7 +141,7 @@ plt.xlabel('z')
 plt.title('Value Function')  
 plt.xlim([-0.05, 0.05])
 
-plt.ticklabel_format(style='plain')    # prevents scientific notation
+plt.ticklabel_format(style='plain',useMathText=False)    # prevents scientific notation
 plt.savefig(Fig_Dir+"VF_rho_{}.png".format(rho))
 plt.close()
 
@@ -163,7 +163,7 @@ plt.xlabel('z')
 # plt.ylabel('$\%$ of GDP')
 plt.title('Derivatives of Value Function')  
 plt.xlim([-0.05, 0.05])
-# plt.ylim([0.55,0.65])
+plt.ylim([55,65])
 plt.ticklabel_format(style='plain')    # prevents scientific notation
 
 # plt.ticklabel_format(style='plain')    # to prevent scientific notation.

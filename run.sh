@@ -40,7 +40,7 @@ for epsilon in ${epsilonarray[@]}; do
             # action_name="OneCapital_newcab_rep"
             # action_name="OneCapital_newcab_newsigmaz"
             # action_name="OneCapital_newcab_newsigmaz_newgrid"
-            action_name="OneCapital"
+            action_name="OneCapital2"
         
             # action_name="OneCapital_newcab3_addD"
 
