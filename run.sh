@@ -22,8 +22,8 @@ maxiter=3000000
 
 # rhoarray=(0.667 0.750 1.00001 1.333 1.500)
 # rhoarray=(0.800 0.850 0.900 0.950 1.00001 1.050 1.100 1.150 1.200 1.250 1.300)
-# rhoarray=(0.800 0.850 0.900)
-rhoarray=(1.350 1.400 1.450 1.500)
+rhoarray=(0.750 0.800 0.850 0.900 0.950 1.00001 1.050 1.100 1.150 1.200 1.250 1.300)
+# rhoarray=(1.350 1.400 1.450 1.500)
 
 for epsilon in ${epsilonarray[@]}; do
     for fraction in "${fractionarray[@]}"; do
@@ -40,7 +40,7 @@ for epsilon in ${epsilonarray[@]}; do
             # action_name="OneCapital_newcab_rep"
             # action_name="OneCapital_newcab_newsigmaz"
             # action_name="OneCapital_newcab_newsigmaz_newgrid"
-            action_name="OneCapital_XDiff"
+            action_name="OneCapital"
         
             # action_name="OneCapital_newcab3_addD"
 
