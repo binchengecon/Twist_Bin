@@ -1,4 +1,4 @@
-#include "petsclinearsystem.h"
+#include "petsclinearsystemXDiff.h"
 
 static inline void fill_mat_values(PetscScalar *State, PetscInt i, PetscInt center, PetscInt j, PetscScalar *lowerLims, PetscScalar *upperLims, PetscScalar *dVec, PetscInt *incVec, PetscInt maxcols,PetscScalar *B, PetscScalar *C, PetscScalar dt, PetscInt *cols, PetscScalar *vals)
 { 
@@ -38,7 +38,7 @@ static inline void fill_mat_values_DirectDiff(PetscScalar *State, PetscInt i, Pe
     //v_{N+1} = v_{N}, ghost point N+1 
 
     vals[center] += -(   (    -firstCoefE*(firstCoefE > 0) + firstCoefE*( firstCoefE<0) )/ dVecX - 2* secondCoefE/dVecX_sq);  // coef of v_{N}
-    vals[center] += firstCoefE*(firstCoefE > 0)/dVecX + secondCoefE/dVecX_sq; // add coef of v_{N+1}
+    vals[center] += -(firstCoefE*(firstCoefE > 0)/dVecX + secondCoefE/dVecX_sq); // add coef of v_{N+1}
 
     vals[center-1-2*j] = -(  -firstCoefE*(firstCoefE < 0)/dVecX + secondCoefE/dVecX_sq );
 
@@ -51,7 +51,7 @@ static inline void fill_mat_values_DirectDiff(PetscScalar *State, PetscInt i, Pe
     //v_{0} = v_{1}, ghost point N+1 
 
     vals[center] += -(   (  -firstCoefE*(firstCoefE > 0) + firstCoefE*( firstCoefE<0) )/ dVecX - 2* secondCoefE/dVecX_sq);  // coef of v_{1}
-    vals[center] += -firstCoefE*(firstCoefE < 0)/dVecX + secondCoefE/dVecX_sq; // add coef of v_{0}
+    vals[center] += -(-firstCoefE*(firstCoefE < 0)/dVecX + secondCoefE/dVecX_sq); // add coef of v_{0}
     vals[center+1+2*j] = -(  firstCoefE*(firstCoefE > 0) /dVecX + secondCoefE/dVecX_sq  );
 
     if (i + incVec[j] < maxcols) cols[center+1+2*j] = i + incVec[j]; // ignore out of bound entries
@@ -89,11 +89,11 @@ static inline void fill_mat_values_CrossDiff(PetscScalar *StateX, PetscScalar *S
   if (  PetscAbs(StateX[i]-upperLims[jX]) < dVecX/2.0 && PetscAbs(StateY[i]-upperLims[jY]) < dVecY /2.0 )  {
   // case 1: corner point  // top right 
 
-    vals[center] = -(  crossCoefE/(4*dVecX*dVecY) ); 
-    vals[center-2-4*jX] = -(  -crossCoefE/(4*dVecX*dVecY) );
-    vals[center-4-4*jX] = -(  -crossCoefE/(4*dVecX*dVecY) );
+    vals[center] += -(  crossCoefE/(4*dVecX*dVecY) ); 
+    vals[center-2-4*jX] += -(  -crossCoefE/(4*dVecX*dVecY) );
+    vals[center-4-4*jX] += -(  -crossCoefE/(4*dVecX*dVecY) );
 
-    vals[center+4+4*jX] = -(  crossCoefE/(4*dVecX*dVecY) );
+    vals[center+4+4*jX] += -(  crossCoefE/(4*dVecX*dVecY) );
     
     cols[center-2-4*jX] = i - incVec[jX];
     cols[center-4-4*jX] = i - incVec[jY];
@@ -103,11 +103,11 @@ static inline void fill_mat_values_CrossDiff(PetscScalar *StateX, PetscScalar *S
   } else if (  PetscAbs(StateX[i]-upperLims[jX]) < dVecX/2.0 && PetscAbs(StateY[i]-lowerLims[jY]) < dVecY /2.0 ) {
   // case 1: corner point  // bottom right 
 
-    vals[center] = -(  -crossCoefE/(4*dVecX*dVecY) ); 
-    vals[center-1-4*jX] = -(  crossCoefE/(4*dVecX*dVecY) );
-    vals[center-2-4*jX] = -(  crossCoefE/(4*dVecX*dVecY) );
+    vals[center] += -(  -crossCoefE/(4*dVecX*dVecY) ); 
+    vals[center-1-4*jX] += -(  crossCoefE/(4*dVecX*dVecY) );
+    vals[center-2-4*jX] += -(  crossCoefE/(4*dVecX*dVecY) );
 
-    vals[center+1+4*jX] = -(  -crossCoefE/(4*dVecX*dVecY) );
+    vals[center+1+4*jX] += -(  -crossCoefE/(4*dVecX*dVecY) );
     
     cols[center-1-4*jX] = i + incVec[jY];
     cols[center-2-4*jX] = i - incVec[jX];
@@ -118,11 +118,11 @@ static inline void fill_mat_values_CrossDiff(PetscScalar *StateX, PetscScalar *S
   } else if (  PetscAbs(StateX[i]-lowerLims[jX]) < dVecX/2.0 && PetscAbs(StateY[i]-upperLims[jY]) < dVecY /2.0 ) {
   // case 1: corner point  // top left 
 
-    vals[center] = -(  -crossCoefE/(4*dVecX*dVecY) ); 
-    vals[center-3-4*jX] = -(  crossCoefE/(4*dVecX*dVecY) );
-    vals[center-4-4*jX] = -(  crossCoefE/(4*dVecX*dVecY) );
+    vals[center] += -(  -crossCoefE/(4*dVecX*dVecY) ); 
+    vals[center-3-4*jX] += -(  crossCoefE/(4*dVecX*dVecY) );
+    vals[center-4-4*jX] += -(  crossCoefE/(4*dVecX*dVecY) );
 
-    vals[center+3+4*jX] = -(  -crossCoefE/(4*dVecX*dVecY) );
+    vals[center+3+4*jX] += -(  -crossCoefE/(4*dVecX*dVecY) );
     
     cols[center-3-4*jX] = i + incVec[jX];
     cols[center-4-4*jX] = i - incVec[jY];
@@ -133,11 +133,11 @@ static inline void fill_mat_values_CrossDiff(PetscScalar *StateX, PetscScalar *S
   } else if (  PetscAbs(StateX[i]-lowerLims[jX]) < dVecX/2.0 && PetscAbs(StateY[i]-lowerLims[jY]) < dVecY /2.0 ) {
   // case 1: corner point  // bottom left 
 
-    vals[center] = -(  crossCoefE/(4*dVecX*dVecY) ); 
-    vals[center-1-4*jX] = -(  -crossCoefE/(4*dVecX*dVecY) );
-    vals[center-3-4*jX] = -(  -crossCoefE/(4*dVecX*dVecY) );
+    vals[center] += -(  crossCoefE/(4*dVecX*dVecY) ); 
+    vals[center-1-4*jX] += -(  -crossCoefE/(4*dVecX*dVecY) );
+    vals[center-3-4*jX] += -(  -crossCoefE/(4*dVecX*dVecY) );
 
-    vals[center+2+4*jX] = -(  crossCoefE/(4*dVecX*dVecY) );
+    vals[center+2+4*jX] += -(  crossCoefE/(4*dVecX*dVecY) );
     
     cols[center-1-4*jX] = i + incVec[jY];
     cols[center-3-4*jX] = i + incVec[jX];
@@ -155,11 +155,11 @@ static inline void fill_mat_values_CrossDiff(PetscScalar *StateX, PetscScalar *S
   // case 2: top
 
 
-    vals[center-2-4*jX] = -(  -crossCoefE/(4*dVecX*dVecY) );
-    vals[center-3-4*jX] = -(  crossCoefE/(4*dVecX*dVecY) );
+    vals[center-2-4*jX] += -(  -crossCoefE/(4*dVecX*dVecY) );
+    vals[center-3-4*jX] += -(  crossCoefE/(4*dVecX*dVecY) );
 
-    vals[center+3+4*jX] = -(  -crossCoefE/(4*dVecX*dVecY) );
-    vals[center+4+4*jX] = -(  crossCoefE/(4*dVecX*dVecY) );
+    vals[center+3+4*jX] += -(  -crossCoefE/(4*dVecX*dVecY) );
+    vals[center+4+4*jX] += -(  crossCoefE/(4*dVecX*dVecY) );
     
     cols[center-2-4*jX] = i - incVec[jX];
     cols[center-3-4*jX] = i + incVec[jX];
@@ -170,11 +170,11 @@ static inline void fill_mat_values_CrossDiff(PetscScalar *StateX, PetscScalar *S
   } else if (  PetscAbs(StateX[i]-lowerLims[jX]) < dVecX/2.0  && PetscAbs(StateX[i]-upperLims[jX]) < dVecX/2.0 && PetscAbs(StateY[i]-lowerLims[jY]) < dVecY /2.0 )  {
   // case 2: bottom
 
-    vals[center-2-4*jX] = -(  crossCoefE/(4*dVecX*dVecY) );
-    vals[center-3-4*jX] = -(  -crossCoefE/(4*dVecX*dVecY) );
+    vals[center-2-4*jX] += -(  crossCoefE/(4*dVecX*dVecY) );
+    vals[center-3-4*jX] += -(  -crossCoefE/(4*dVecX*dVecY) );
 
-    vals[center+1+4*jX] = -(  -crossCoefE/(4*dVecX*dVecY) );
-    vals[center+2+4*jX] = -(  crossCoefE/(4*dVecX*dVecY) );
+    vals[center+1+4*jX] += -(  -crossCoefE/(4*dVecX*dVecY) );
+    vals[center+2+4*jX] += -(  crossCoefE/(4*dVecX*dVecY) );
     
     cols[center-2-4*jX] = i - incVec[jX];
     cols[center-3-4*jX] = i - incVec[jY];
@@ -186,11 +186,11 @@ static inline void fill_mat_values_CrossDiff(PetscScalar *StateX, PetscScalar *S
   } else if (  PetscAbs(StateX[i]-lowerLims[jX]) < dVecX/2.0 && PetscAbs(StateY[i]-upperLims[jY]) < dVecY /2.0  && PetscAbs(StateY[i]-lowerLims[jY]) < dVecY /2.0) {
   // case 2: left
 
-    vals[center-1-4*jX] = -(  -crossCoefE/(4*dVecX*dVecY) );
-    vals[center-4-4*jX] = -(  crossCoefE/(4*dVecX*dVecY) );
+    vals[center-1-4*jX] += -(  -crossCoefE/(4*dVecX*dVecY) );
+    vals[center-4-4*jX] += -(  crossCoefE/(4*dVecX*dVecY) );
 
-    vals[center+2+4*jX] = -(  crossCoefE/(4*dVecX*dVecY) );
-    vals[center+3+4*jX] = -(  -crossCoefE/(4*dVecX*dVecY) );
+    vals[center+2+4*jX] += -(  crossCoefE/(4*dVecX*dVecY) );
+    vals[center+3+4*jX] += -(  -crossCoefE/(4*dVecX*dVecY) );
     
     cols[center-1-4*jX] = i + incVec[jY];
     cols[center-4-4*jX] = i - incVec[jY];
@@ -200,11 +200,11 @@ static inline void fill_mat_values_CrossDiff(PetscScalar *StateX, PetscScalar *S
   } else if (  PetscAbs(StateX[i]-upperLims[jX]) < dVecX/2.0 && PetscAbs(StateY[i]-upperLims[jY]) < dVecY /2.0  && PetscAbs(StateY[i]-lowerLims[jY]) < dVecY /2.0) {
   // case 2: right
 
-    vals[center-1-4*jX] = -(  crossCoefE/(4*dVecX*dVecY) );
-    vals[center-4-4*jX] = -(  -crossCoefE/(4*dVecX*dVecY) );
+    vals[center-1-4*jX] += -(  crossCoefE/(4*dVecX*dVecY) );
+    vals[center-4-4*jX] += -(  -crossCoefE/(4*dVecX*dVecY) );
 
-    vals[center+1+4*jX] = -(  -crossCoefE/(4*dVecX*dVecY) );
-    vals[center+4+4*jX] = -(  crossCoefE/(4*dVecX*dVecY) );
+    vals[center+1+4*jX] += -(  -crossCoefE/(4*dVecX*dVecY) );
+    vals[center+4+4*jX] += -(  crossCoefE/(4*dVecX*dVecY) );
     
     cols[center-1-4*jX] = i + incVec[jY];
     cols[center-4-4*jX] = i - incVec[jY];
@@ -223,10 +223,10 @@ static inline void fill_mat_values_CrossDiff(PetscScalar *StateX, PetscScalar *S
 
 
 
-    vals[center+1+4*jX] = -(  -crossCoefE/(4*dVecX*dVecY) );
-    vals[center+2+4*jX] = -(  crossCoefE/(4*dVecX*dVecY) );
-    vals[center+3+4*jX] = -(  -crossCoefE/(4*dVecX*dVecY) );
-    vals[center+4+4*jX] = -(  crossCoefE/(4*dVecX*dVecY) );
+    vals[center+1+4*jX] += -(  -crossCoefE/(4*dVecX*dVecY) );
+    vals[center+2+4*jX] += -(  crossCoefE/(4*dVecX*dVecY) );
+    vals[center+3+4*jX] += -(  -crossCoefE/(4*dVecX*dVecY) );
+    vals[center+4+4*jX] += -(  crossCoefE/(4*dVecX*dVecY) );
     
     cols[center+1+4*jX] = i - incVec[jX] + incVec[jY] ;
     cols[center+2+4*jX] = i + incVec[jX] + incVec[jY];
@@ -282,11 +282,17 @@ PetscErrorCode FormLinearSystem_DirectCrossDiff_C(PetscScalar *R, PetscScalar *F
     memset(vals,0,13*sizeof(PetscScalar));
     memset(cols,-1,13*sizeof(PetscInt));
     cols[center] = i;
-    vals[center] = 1.0 - dt * A[i];
+    vals[center] = 1.0/dt - A[i];
     fill_mat_values_DirectDiff(R,i,center,0,lowerLims,upperLims,dVec,incVec,n,B_r,C_rr,dt,cols,vals);
     fill_mat_values_DirectDiff(F,i,center,1,lowerLims,upperLims,dVec,incVec,n,B_f,C_ff,dt,cols,vals);
     fill_mat_values_DirectDiff(K,i,center,2,lowerLims,upperLims,dVec,incVec,n,B_k,C_kk,dt,cols,vals);
     ierr = MatSetValues(petsc_mat,1,&i,3*4+1,cols,vals,INSERT_VALUES);CHKERRQ(ierr);
+
+  }
+  ierr = MatAssemblyBegin(petsc_mat,MAT_FLUSH_ASSEMBLY);CHKERRQ(ierr);
+  ierr = MatAssemblyEnd(petsc_mat,MAT_FLUSH_ASSEMBLY);CHKERRQ(ierr);
+
+    for (i = 0; i < n; ++i) {
 
     centerXDiff = 3*8/2;
     memset(valsXDiff,0,25*sizeof(PetscScalar));
@@ -300,6 +306,7 @@ PetscErrorCode FormLinearSystem_DirectCrossDiff_C(PetscScalar *R, PetscScalar *F
     ierr = MatSetValues(petsc_mat,1,&i,3*8+1,colsXDiff,valsXDiff,ADD_VALUES);CHKERRQ(ierr);
 
   }
+
   ierr = MatAssemblyBegin(petsc_mat,MAT_FINAL_ASSEMBLY);CHKERRQ(ierr);
   ierr = MatAssemblyEnd(petsc_mat,MAT_FINAL_ASSEMBLY);CHKERRQ(ierr);
   PetscFunctionReturn(0);

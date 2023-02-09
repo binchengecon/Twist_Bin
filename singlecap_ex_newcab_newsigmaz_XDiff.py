@@ -3,7 +3,8 @@
 # import matplotlib as mpl
 import pickle
 import time
-import petsclinearsystem
+# import petsclinearsystem
+import petsclinearsystemXDiff
 from petsc4py import PETSc
 import petsc4py
 import os
@@ -36,12 +37,13 @@ args = parser.parse_args()
 alpha_z_hat = 0.0
 kappa_hat = 0.014
 
-# alpha_c_hat = 0.484       # consumption intercept (estimated) 
-alpha_c_hat = 0.88      # consumption intercept (estimated) 
+alpha_k_hat = -0.88       # -1.279
+alpha_c_hat = 0.484      
+
 beta_hat = 1.0
 sigma_c = np.array([0.477, 0.0 ])   # consumption exposure (= exposure of single capital)
 
-sigma_z = 0.01* np.array([0.011, 0.025])
+sigma_z = np.array([0.011, 0.025])
 rho = args.rho
 
 # delta = 0.002
@@ -219,25 +221,31 @@ while FC_Err > tol and epoch < max_iter:
     C_1 = (sigma_z[0]**2+sigma_z[1]**2)/2*np.ones(W1_mat.shape)
     C_2 = np.zeros(W1_mat.shape)
     C_3 = np.zeros(W1_mat.shape)
+    C_12 = np.zeros(W1_mat.shape)
+    C_23 = np.zeros(W1_mat.shape)
+    C_31 = np.zeros(W1_mat.shape)
     temp = (1-rho)* ( np.log(A_cap - d)-V0 )
     D = delta/(1-rho) * ( np.exp(temp) - 1) 
-    D += theta1*np.log(1+theta2*d) + .01 * (alpha_c_hat + beta_hat *W1_mat - .01/2*(sigma_z[0]**2+sigma_z[1]**2) ) +.01 * (sigma_c[0]*h1 + sigma_c[1]*hz)
+    D += theta1*np.log(1+theta2*d) + .01 * (alpha_k_hat + beta_hat *W1_mat - .01/2*(sigma_c[0]**2+sigma_c[1]**2) ) +.01 * (sigma_c[0]*h1 + sigma_c[1]*hz)
     D += ell * ( h1**2+hz**2 )/2
     
     start_ksp = time.time()
 
     A_1d = A.ravel(order='F')
-    C_1_1d = C_1.ravel(order='F')
-    C_2_1d = C_2.ravel(order='F')
-    C_3_1d = C_3.ravel(order='F')
     B_1_1d = B_1.ravel(order='F')
     B_2_1d = B_2.ravel(order='F')
     B_3_1d = B_3.ravel(order='F')
+    C_1_1d = C_1.ravel(order='F')
+    C_2_1d = C_2.ravel(order='F')
+    C_3_1d = C_3.ravel(order='F')
+    C_12_1d = C_1.ravel(order='F')
+    C_23_1d = C_2.ravel(order='F')
+    C_31_1d = C_3.ravel(order='F')
     D_1d = D.ravel(order='F')
-    petsclinearsystem.formLinearSystem(W1_mat_1d, W2_mat_1d, W3_mat_1d, A_1d, B_1_1d, B_2_1d,
-                                       B_3_1d, C_1_1d, C_2_1d, C_3_1d, epsilon, lowerLims, upperLims, dVec, increVec, petsc_mat)
+    petsclinearsystemXDiff.formLinearSystem_DirectCrossDiff(W1_mat_1d, W2_mat_1d, W3_mat_1d, A_1d, B_1_1d, B_2_1d,
+                                       B_3_1d, C_1_1d, C_2_1d, C_3_1d, C_12_1d, C_23_1d, C_31_1d, epsilon, lowerLims, upperLims, dVec, increVec, petsc_mat)
     V0_1d = V0.ravel(order='F')
-    b = V0_1d + D_1d * epsilon
+    b = V0_1d / epsilon + D_1d 
     petsc_rhs = PETSc.Vec().createWithArray(b)
     x = petsc_mat.createVecRight()
 

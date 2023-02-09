@@ -63,14 +63,14 @@ def configure():
     )
 
 extensions = [
-Extension('petsclinearsystem', 
-              sources = ['src/petsclinearsystem.pyx',  # key source c-python file, give numpy obj to c array
-                         'src/petsclinearsystemimpl.c'], # key source c file, used to generate c file without impl
-              depends = ['src/petsclinearsystem.h'],
+Extension('petsclinearsystemXDiff', 
+              sources = ['src/petsclinearsystemXDiff.pyx',  # key source c-python file, give numpy obj to c array
+                         'src/petsclinearsystemXDiffimpl.c'], # key source c file, used to generate c file without impl
+              depends = ['src/petsclinearsystemXDiff.h'],
               **configure()),
 ]
 
-setup(name = "petsclinearsystem_XDiff", # package name
+setup(name = "petsclinearsystemXDiff", # package name
       version = '0.1',
        description = 'use petsc to solve HJB with cross-difference term',
        author = 'Bin Cheng',
